@@ -1,0 +1,43 @@
+.navbar{
+	width:auto;
+	height:50px;
+	background-color:#99CBE3;
+	}
+	
+.navtxt{
+	font-family:Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+	font-size:24px;
+	line-height: 50px;
+	margin-left:20px;
+	}
+	
+.form-container{
+	width:auto;
+	height:500px;
+	}
+	
+.txtuname{
+	width: 300px;
+	height: 40px;
+	border-radius: 5px;
+	border-color:#969696;
+	margin-top: 150px;
+	font-size:16px;
+	}
+.txtpass{
+	width: 300px;
+	height: 40px;
+	border-radius: 5px;
+	border-color:#969696;
+	margin-top: 50px;
+	font-size:16px;
+	margin-bottom:50px
+	}
+.log-btn{
+	width: 100px;
+	height: 40px;
+	background-color:#23D943;
+	border-style:none;
+	border-radius: 3px;
+	font-size:14px;
+	}

@@ -1,0 +1,115 @@
+body{
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", "serif";
+}
+
+/* NAVBAR */
+
+.navbar {
+	background-color: #666;
+	height: 70px; /* Adjust height here */
+  }
+
+.navbar-brand {
+	font-weight: bold;
+	letter-spacing: 1px;
+	font-size: 1.75rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.nav-link {
+	font-weight: 500;
+	color: #fff !important;
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem;
+	font-size: 1.25rem;
+	transition: color 0.3s ease;
+}
+
+.nav-link.active {
+	color: #ffc107 !important;
+}
+
+.nav-link:hover {
+	color: #f8f9fa !important;
+}
+
+
+/* NEW CARD STYLES */
+.stat-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+/* .stat-card:hover {
+    transform: translateY(-5px);
+} */
+
+.stat-title {
+    font-size: 1.50rem;
+    /* color: #6c757d; */
+    color: #393f45;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #212529;
+}
+
+.bg-light-red {
+    /* background-color: #f8d7da; */
+    background-color: #e8bdc1;
+}
+
+.bg-light-green {
+    /* background-color: #d4edda; */
+    background-color: #b0e8bd;
+}
+
+/* PERCENTAGE CSS DESIGN */
+
+.card {
+	border-radius: 1rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+.card-title {
+	/* font-size: 1.25rem; */
+	font-weight: bold;
+}
+
+.progress {
+	height: 20px;
+	border-radius: 10px;
+}
+
+.progress-bar {
+	font-size: 0.9rem;
+	line-height: 20px;
+}
+
+.program-label {
+	font-weight: bold;
+	font-size: 1.25rem;
+}
+
+.bg-bsed{
+	background-color: pink;
+	color: #212529;
+}
+.bg-bsict{
+	background-color: blue;
+}
+.bg-bscje{
+	background-color: red;
+}
+.bg-bsit{
+	background-color: green;
+}
+.bg-bshm{
+	background-color: yellow;
+	color: #212529;
+}
