@@ -16,3 +16,8 @@ function viewvote() {
     $("#LoadDetails").html(data);
   });
 }
+function profile() {
+  $.post("view/profile.php", {}, function (data) {
+    $("#LoadDetails").html(data);
+  });
+}

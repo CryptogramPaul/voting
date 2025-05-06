@@ -1,90 +1,96 @@
-<?php 
-session_start();
-require_once '../conn/connection.php';
-$sid = $_SESSION['studid'];
-$fn=$_SESSION['fname'];
-$mn=$_SESSION['mname'];
-$ln=$_SESSION['lname'];
-$course=$_SESSION['course'];
-$un=$_SESSION['username'];
-$pwd=$_SESSION['password'];
- ?>
+<?php
+    require_once '../conn/connection.php';
+    $studid = $_COOKIE['userid'];
 
-<!doctype html>
-<html>
+    
+    $profile = $conn->prepare("SELECT * FROM `tb_students` WHERE studid = ?");
+    $profile->execute([$studid]);
+    
+    $value = $profile->fetch();
 
-<head>
-    <meta charset="utf-8">
-    <title>SSC Online Voting WVSU-LC</title>
-    <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
-    <link href="../assets/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="../assets/js/bootstrap.js"></script>
-    <script src="../js/jquery-3.7.1.min.js"></script>
-</head>
+?>
+<style>
+.form-card {
+    max-width: 700px;
+    margin: 60px auto;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-<body>
+.form-card h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #0d6efd;
+}
 
-    <div id="wrapper">
+.form-card .form-label {
+    font-weight: 600;
+}
 
-        <header id="header" class="fixed-top d-flex align-items-center">
-            <div class="container-fluid container-xl d-flex align-items-center justify-content-lg-between">
+.form-card .btn {
+    width: 100%;
+}
+</style>
 
-                <h1 class="logo me-auto me-lg-0"><a href="../index.php">SSC Online Voting WVSU-LC</a></h1>
-                <!-- Uncomment below if you prefer to use an image logo -->
-                <!-- <a href="index.html" class="logo me-auto me-lg-0"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
-
-                <nav id="navbar" class="navbar order-last order-lg-0">
-                    <ul>
-                        <li><a class="nav-link scrollto " href="../index.php">Home</a></li>
-                        <li><a class="nav-link scrollto" href="vc.php">Voting Center</a></li>
-                        <li><a class="nav-link scrollto" href="myvote.php">View Vote</a></li>
-                        <li><a class="nav-link scrollto active">Profile</a></li>
-                        <li><a class="nav-link scrollto" href="#" onclick="Logout()">Logout</a></li>
-                    </ul>
-                </nav><!-- .navbar -->
-
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="form-card">
+                <h3>Update Profile</h3>
+                <form action="action.php" method="post">
+                    <input type="hidden" name="sid" value="<?php echo $value['studid'];?>">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control"
+                            value="<?php echo $value['fname'] . ' ' . $value['mname'] . ' ' . $value['lname'];?>"
+                            readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Course</label>
+                        <input type="text" class="form-control" value="<?php echo $value['course'];?>" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" value="<?php echo $value['username'];?>" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Input Current Password</label>
+                        <input type="password" name="cpwd2" class="form-control" placeholder="Enter current password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="text" name="npwd" class="form-control" placeholder="Enter new password">
+                    </div>
+                    <button type="submit" name="updatepwd" class="btn btn-primary">Update Record</button>
+                </form>
             </div>
-        </header>
-
-        <div style="color:black; margin-top:150px; margin-left:100px;">
-            <form action="action.php" method="post">
-
-                <?php
-                    $qq = $conn->prepare("SELECT * FROM `tb_students` WHERE studid = ?");
-                    $qq->execute([$sid]);
-                    foreach($qq->fetchAll() as $key => $value){
-		        ?>
-                <input type="hidden" name="sid" value="<?php echo $value["studid"];?>" />
-                Name : <?php echo $fn;?> <?php echo $mn;?> <?php echo $ln;?> <br>
-
-                Course: <?php echo $course;?> <br>
-
-                Username: <?php echo $value["username"];?> <br>
-                <input type="hidden" name="cpwd" value="<?php echo $value["password"];?>" />
-                Input Current Password: <input type="password" name="cpwd2" /> <br>
-
-                New Password: <input type="text" name="npwd" /> <br> <br>
-
-                <?php } ?>
-                <button type="submit" name="updatepwd" class="btn-primary">UPDATE RECORD</button>
-            </form>
         </div>
-        <br><br>
-        <center>
-            <div style="width:800px; height:auto; border: 1px solid grey; border-radius:3px; color:black;">
+        <div class="col">
+            <div class="form-card ">
                 <h3>Application for Candidacy</h3>
-                <br>
-                First Name: <input type="text" name="fn" value="<?php echo $fn;?>"><br><br>
-                Middle Name: <input type="text" name="fn" value="<?php echo $mn;?>"><br><br>
-                Last Name: <input type="text" name="fn" value="<?php echo $ln;?>"><br><br>
-                Course: <input type="text" name="fn" value="<?php echo $course;?>"><br><br>
-
-                <button type="submit" name="sub_coc">SUBMIT</button>
-
+                <form action="action.php" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="fn" class="form-control" value="<?php echo $value['fname'];?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Middle Name</label>
+                        <input type="text" name="mn" class="form-control" value="<?php echo $value['mname'];?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="ln" class="form-control" value="<?php echo $value['lname'];?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Course</label>
+                        <input type="text" name="course" class="form-control" value="<?php echo $value['course'];?>">
+                    </div>
+                    <button type="submit" name="sub_coc" class="btn btn-success">Submit</button>
+                </form>
             </div>
-        </center>
-</body>
-
-</html>
-<script src="../js/authentication.js"></script>
+        </div>
+    </div>
+</div>

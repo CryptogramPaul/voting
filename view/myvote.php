@@ -1,71 +1,62 @@
-<?php 
-session_start();
-require_once '../conn/connection.php';
+<?php
+    require_once '../conn/connection.php';
+    $studid = $_COOKIE['userid'];
+?>
+<style>
+.vote-summary {
+    max-width: 600px;
+    margin: 50px auto;
+    background: linear-gradient(135deg, #e0f7fa, #ffffff);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: transform 0.3s ease;
+}
 
-$sid = $_SESSION['studid'];
-$fn=$_SESSION['fname'];
-$mn=$_SESSION['mname'];
-$ln=$_SESSION['lname'];
- ?>
+.vote-summary:hover {
+    transform: scale(1.02);
+}
 
-<!doctype html>
-<html>
+.vote-summary h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #00695c;
+    text-align: center;
+}
 
-<head>
-    <meta charset="utf-8">
-    <title>SSC Online Voting WVSU-LC</title>
-    <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
-    <link href="../assets/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="../assets/js/bootstrap.js"></script>
-    <script src="../js/jquery-3.7.1.min.js"></script>
-</head>
+.vote-summary p {
+    font-size: 17px;
+    margin: 10px 0;
+    color: #333;
+    padding: 10px;
+    background: #ffffff;
+    border-left: 4px solid #26a69a;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
 
-<body>
+.vote-summary .thank-you {
+    margin-top: 30px;
+    font-weight: bold;
+    color: #2e7d32;
+    text-align: center;
+    font-size: 18px;
+}
+</style>
 
-    <div id="wrapper">
-
-        <header id="header" class="fixed-top d-flex align-items-center">
-            <div class="container-fluid container-xl d-flex align-items-center justify-content-lg-between">
-
-                <h1 class="logo me-auto me-lg-0"><a href="../index.php">SSC Online Voting WVSU-LC <?php
-                
-                ?></a></h1>
-                <!-- Uncomment below if you prefer to use an image logo -->
-                <!-- <a href="index.html" class="logo me-auto me-lg-0"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
-
-                <nav id="navbar" class="navbar order-last order-lg-0">
-                    <ul>
-                        <li><a class="nav-link scrollto " href="../index.php">Home</a></li>
-                        <li><a class="nav-link scrollto" href="vc.php">Voting Center</a></li>
-                        <li><a class="nav-link scrollto active">View Vote</a></li>
-                        <li><a class="nav-link scrollto" href="profile.php">Profile</a></li>
-                        <li><a class="nav-link scrollto" href="#" onclick="Logout()">Logout</a></li>
-                    </ul>
-                </nav><!-- navbar -->
-            </div>
-        </header>
-
-        <div style="color:black; margin-top:150px; margin-left:100px;">
-            <?php
-            $vote = $conn->prepare("SELECT * FROM tb_vote WHERE studid = ? ");
-            $vote->execute([$sid]);
-            foreach($vote->fetchAll() as $key => $value){
-		?>
-            Chairman : <?php echo $value["cm"];?> <br>
-            Vice Chairman : <?php echo $value["vcm"];?> <br>
-            Secretary : <?php echo $value["sec"];?> <br>
-            Assistant Secretary : <?php echo $value["assec"];?> <br>
-            Treasurer : <?php echo $value["tre"];?> <br>
-            Assistant Treasurer : <?php echo $value["astre"];?> <br>
-            Auditor : <?php echo $value["aud"];?> <br>
-            Assistant Auditor : <?php echo $value["asaud"];?> <br>
-            Business Manager : <?php echo $value["bm"];?> <br>
-            Assistant Business Manager : <?php echo $value["abm"];?> <br>
-            PIO : <?php echo $value["pio"];?> <br>
-            <?php } ?>
-        </div>
-</body>
-
-</html>
-<script src="../js/authentication.js"></script>
+<div class="vote-summary">
+    <h1>Voting Summary</h1>
+    <p><strong>Chairman:</strong> nn nn nn</p>
+    <p><strong>Vice Chairman:</strong> hgb hjh hgh</p>
+    <p><strong>Secretary:</strong> ddd jjj gfg</p>
+    <p><strong>Assistant Secretary:</strong> Maria Santos Lopez</p>
+    <p><strong>Treasurer:</strong> sample sample sample</p>
+    <p><strong>Assistant Treasurer:</strong> sa sa sa</p>
+    <p><strong>Auditor:</strong> add add add</p>
+    <p><strong>Assistant Auditor:</strong> 12 12 12</p>
+    <p><strong>Business Manager:</strong> b b b</p>
+    <p><strong>Assistant Business Manager:</strong> aaaa aaa aaa</p>
+    <p><strong>PIO:</strong> pio asdasdasd asdasdasd</p>
+    <p class="thank-you">✅ Thank you for your participation! Your vote has been recorded successfully.</p>
+</div>

@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 session_start();
 date_default_timezone_set('Asia/Manila');
 include_once('connection.php');
@@ -16,7 +16,7 @@ if(isset($_POST['vote'])){
 	$assec       =  $_POST['assec'];
 	$tre       =  $_POST['tre'];
 	$astre       =  $_POST['astre'];
-	$aud=  $_POST['aud'];
+	$aud		=  $_POST['aud'];
 	$asaud       =  $_POST['asaud'];
 	$bm       =  $_POST['bm'];
 	$abm       =  $_POST['abm'];
@@ -72,4 +72,4 @@ $query2 = 	mysql_query("UPDATE `tb_students` SET `password` = '$npwd' WHERE `stu
 	
 	
 
-?>
+?> -->
