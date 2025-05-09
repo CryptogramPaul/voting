@@ -6,10 +6,6 @@
         header("Location: login.php");
     }
 
-    $sid = $_SESSION['studid'];
-    $fn=$_SESSION['fname'];
-    $mn=$_SESSION['mname'];
-    $ln=$_SESSION['lname'];
  ?>
 <!doctype html>
 <html>

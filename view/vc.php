@@ -125,7 +125,7 @@ h2 {
 }
 </style>
 <?php
-    if($countvote = 0){
+    if($countvote == 0){
 ?>
 <div class="row">
     <div class="col-12 pt-3">
@@ -141,7 +141,6 @@ h2 {
                     }
             ?>
             <div class="tab <?php echo $tab ?>"><?php echo $value['party'] ?></div>
-            <!-- <div class="tab active-smart">Smart</div> -->
             <?php } ?>
         </div>
     </div>
@@ -252,9 +251,8 @@ function vote() {
         pio: pio
     }, function(data) {
         if (jQuery.trim(data) === "success") {
-            // $("#UserCanvas").offcanvas("hide");
             alert("Voted Successfully");
-            // UserDetails(); // Call function to refresh disease details
+            votingcenter();
         } else {
             alert(data);
         }

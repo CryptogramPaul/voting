@@ -1,15 +1,14 @@
 <?php
     require_once '../conn/connection.php';
 
-    $result = $conn->prepare("SELECT count(studid) FROM tb_students");    
+    $result = $conn->prepare("SELECT * FROM tb_students");    
     $result->execute();
-    $count_students = $result->fetchColumn(0);
+    $count_students = $result->rowCount();
     
-
     $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote");    
     $vote->execute();
     $count_vote = $vote->fetchColumn(0);
-
+    
 ?>
 <div class="row g-4 py-4">
     <div class="col-md-6">
@@ -29,34 +28,157 @@
     <div class="col-12 col-xl-6 ">
         <div class="card p-4">
             <h2 class="card-title mb-2">Percentage of Votes</h2>
+            <?php
+                // OVERALL PERCENTAGE
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
 
-            <h4 class="mb-2 fw-semibold">Overall: 0%</h4>
+                $overall = ($total_students > 0) ? ($count_vote / $total_students) * 100 : 0;
+
+            ?>
+            <h4 class="mb-2 fw-semibold">Overall: <?php echo round($overall, 2) . "%" ?></h4>
             <div class="progress mb-4">
-                <div class="progress-bar bg-secondary" style="width: 23%">23%</div>
+                <div class="progress-bar bg-secondary" style="width: <?php echo round($overall, 2) . "%" ?>">
+                    <?php echo round($overall, 2) . "%" ?></div>
             </div>
 
-            <p class="program-label">BSED</p>
+            <?php
+                // BSED PERCENTAGE
+
+                $sql_bsed = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BSED' OR b.course = 'BSED' OR course = 'BEED' GROUP BY b.course ");
+                $sql_bsed->execute();
+                $bsed_count = $sql_bsed->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BSED' OR course = 'BEED' ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $bsed_percentage = ($total_students > 0) ? ($bsed_count / $total_students) * 100 : 0;
+
+            ?>
+            <p class="program-label">BSED/BTVED/BEED</p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-bsed" style="width: 10%">10%</div>
+                <div class="progress-bar bg-bsed" style="width: <?php echo round($bsed_percentage, 2) . "%" ?>">
+                    <?php echo round($bsed_percentage, 2) . "%" ?></div>
             </div>
+
+            <!-- <?php
+                // BEED PERCENTAGE
+
+                $sql_beed = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BEED' GROUP BY b.course ");
+                $sql_beed->execute();
+                $beed_count = $sql_beed->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BEED' ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $beed_percentage = ($total_students > 0) ? ($beed_count / $total_students) * 100 : 0;
+
+            ?>
+            <p class="program-label">BEED</p>
+            <div class="progress mb-3">
+                <div class="progress-bar bg-bsed" style="width: <?php echo round($beed_percentage, 2) . "%" ?>">
+                    <?php echo round($beed_percentage, 2) . "%" ?></div>
+            </div> -->
+
+            <?php
+                // BSICT PERCENTAGE
+
+                $sql_bsict = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BSICT' GROUP BY b.course ");
+                $sql_bsict->execute();
+                $bsict_count = $sql_bsict->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSICT'  ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $bsict_percentage = ($total_students > 0) ? ($bsict_count / $total_students) * 100 : 0;
+
+            ?>
             <p class="program-label">BSICT</p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-primary" style="width: 20%">20%</div>
+                <div class="progress-bar bg-primary" style="width: <?php echo round($bsict_percentage, 2) . "%" ?>">
+                    <?php echo round($bsict_percentage, 2) . "%" ?></div>
             </div>
 
+            <?php
+                // BSCJE PERCENTAGE
+
+                $sql_bscje = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BSCJE' GROUP BY b.course ");
+                $sql_bscje->execute();
+                $bscje_count = $sql_bscje->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSCJE' ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $bscje_percentage = ($total_students > 0) ? ($bscje_count / $total_students) * 100 : 0;
+
+            ?>
             <p class="program-label">BSCJE</p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-bscje" style="width: 23%">23%</div>
+                <div class="progress-bar bg-bscje" style="width: <?php echo round($bscje_percentage, 2) . "%" ?>">
+                    <?php echo round($bscje_percentage, 2) . "%" ?></div>
             </div>
 
+            <?php
+                // BSIT PERCENTAGE
+
+                $sql_bsit = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BSIT' GROUP BY b.course ");
+                $sql_bsit->execute();
+                $bsit_count = $sql_bsit->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSIT' ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $bsit_percentage = ($total_students > 0) ? ($bsit_count / $total_students) * 100 : 0;
+
+            ?>
             <p class="program-label">BSIT</p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-bsit" style="width: 15%">15%</div>
+                <div class="progress-bar bg-bsit" style="width: <?php echo round($bsit_percentage, 2) . "%" ?>">
+                    <?php echo round($bsit_percentage, 2) . "%" ?></div>
             </div>
 
+            <?php
+                // BSHM PERCENTAGE
+
+                $sql_bshm = $conn->prepare("SELECT count(*) as vote
+                                                FROM tb_vote a 
+                                                LEFT JOIN tb_students b ON a.studid = b.studid 
+                                                WHERE b.course = 'BSHM' GROUP BY b.course ");
+                $sql_bshm->execute();
+                $bshm_count = $sql_bshm->fetchColumn(0); 
+
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSHM' ");
+                $sql_total_students->execute();
+                $total_students = $sql_total_students->fetchColumn();
+
+                $bshm_percentage = ($total_students > 0) ? ($bshm_count / $total_students) * 100 : 0;
+
+            ?>
             <p class="program-label">BSHM</p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-bshm" style="width: 16%">16%</div>
+                <div class="progress-bar bg-bshm" style="width: <?php echo round($bshm_percentage, 2) . "%" ?>">
+                    <?php echo round($bshm_percentage, 2) . "%" ?></div>
             </div>
         </div>
     </div>
