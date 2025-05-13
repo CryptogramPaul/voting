@@ -49,7 +49,11 @@
                 $sql_bsed = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSED' OR b.course = 'BTVTED' OR b.course = 'BEED' GROUP BY b.course ");
+                                                WHERE b.course = 'BSED' OR b.course = 'BTVTED' OR b.course = 'BEED' ");
+                // $sql_bsed = $conn->prepare("SELECT count(*) as vote
+                //                                 FROM tb_students a 
+                //                                 JOIN tb_vote b ON a.studid = b.studid 
+                //                                 WHERE a.course = 'BSED' OR a.course = 'BTVTED' OR a.course = 'BEED' ");
                 $sql_bsed->execute();
                 $bsed_count = $sql_bsed->fetchColumn(0); 
 
@@ -95,7 +99,7 @@
                 $sql_bsict = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSICT' GROUP BY b.course ");
+                                                WHERE b.course = 'BSICT' ");
                 $sql_bsict->execute();
                 $bsict_count = $sql_bsict->fetchColumn(0); 
 
@@ -118,7 +122,7 @@
                 $sql_bscje = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSCJE' GROUP BY b.course ");
+                                                WHERE b.course = 'BSCJE' ");
                 $sql_bscje->execute();
                 $bscje_count = $sql_bscje->fetchColumn(0); 
 
@@ -141,7 +145,7 @@
                 $sql_bsit = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSIT' GROUP BY b.course ");
+                                                WHERE b.course = 'BSIT' ");
                 $sql_bsit->execute();
                 $bsit_count = $sql_bsit->fetchColumn(0); 
 
@@ -164,7 +168,7 @@
                 $sql_bshm = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSHM' GROUP BY b.course ");
+                                                WHERE b.course = 'BSHM'  ");
                 $sql_bshm->execute();
                 $bshm_count = $sql_bshm->fetchColumn(0); 
 
