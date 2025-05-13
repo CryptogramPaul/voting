@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2025 at 08:30 AM
+-- Generation Time: May 13, 2025 at 09:17 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -240,12 +240,13 @@ INSERT INTO `tb_candidates` (`canid`, `fname`, `mname`, `lname`, `course`, `sy`,
 (15, 'add', ' add', ' add', 'BSICT', '2024-2025', 'AUDITOR', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Liberal'),
 (16, 'asad ', ' asad', ' asad', 'BTVTED', '2024-2025', 'ASSISTANT AUDITOR', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Liberal'),
 (17, '12', '12', ' 12', 'BSCJE', '2024-2025', 'ASSISTANT AUDITOR', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Smart'),
-(18, 'b', 'b', 'b', 'BSED', '2024-2025', 'BUSINESS MANAGER', '', '', '', '', '', '', 'Liberal'),
+(18, 'b', 'b', 'b', 'BSED', '2020-2021', 'BUSINESS MANAGER', 'Y', 'Y', 'Y', 'Y', 'Y', '', 'Liberal'),
 (19, 'bm ', ' bn', ' bn', 'BSCJE', '2024-2025', 'BUSINESS MANAGER', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Smart'),
 (20, 'asdddd', 'asddd', ' aasdddd', 'BTVTED', '2024-2025', 'ASSISTANT BUSINESS MANAGER', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Smart'),
 (21, 'aaaa ', ' aaa', ' aaa', 'BSICT', '2024-2025', 'ASSISTANT BUSINESS MANAGER', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Liberal'),
 (22, 'pio', ' asdasdasd', ' asdasdasd', 'BSICT', '2024-2025', 'PIO', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Smart'),
-(23, ' qwe', ' qwe', ' qwe', 'BTVTED', '2024-2025', 'PIO', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Liberal');
+(23, ' qwe', ' qwe', ' qwe', 'BTVTED', '2024-2025', 'PIO', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Liberal'),
+(24, 'asd', 'asd', 'asd', 'BSED', '2020-2021', 'CHAIRMAN', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Smart');
 
 -- --------------------------------------------------------
 
@@ -400,13 +401,13 @@ CREATE TABLE `tb_students` (
 --
 
 INSERT INTO `tb_students` (`studid`, `schoolid`, `fname`, `mname`, `lname`, `course`, `username`, `password`, `status`) VALUES
-(18, '1234', ' Mak', ' Mak', ' Mak', 'BSED', 'user', '12345', 'Registered'),
-(19, '1111', 'wweee', 'ddddd', 'aaaaa', 'BEED', '12321', '12321', 'Registered'),
+(18, '1234', ' Mak', ' Mak', ' Mak', 'BSED', 'user', 'admin', 'Registered'),
+(19, '1111', 'we', 'ddddd', 'aaaaa', 'BEED', '12321', '12321', 'Registered'),
 (20, '0504-15', 'John Paul', 'Llera', 'Libero', 'BSICT', 'paul', 'admin', 'Registered'),
 (21, '46564', 'ASDASD', 'ASDASD', 'ASDASD', 'BTVTED', 'SA', 'SA', 'Registered'),
-(22, ' 65787', 'qwert', 'we', 'sdasd ', 'BTVTED', '1', '1 ', 'Registered'),
+(22, '03-9647', 'Sal', 'Sel', 'Sol', 'BTVTED', '112', '221 ', 'Registered'),
 (23, ' 6564', ' sample', ' sample', ' sample', 'BSCJE', 'sample', ' sa', 'Registered'),
-(24, ' 6459', ' mark', ' makr', ' mark', 'BSIT', ' mark', ' admin', 'Registered');
+(25, '03-8791', 'John Paul', 'Llera', 'Libero', 'BSED', '_user', 'admin', 'Registered');
 
 -- --------------------------------------------------------
 
@@ -484,17 +485,18 @@ CREATE TABLE `tb_vote` (
   `asaud` varchar(200) NOT NULL,
   `bm` varchar(200) NOT NULL,
   `abm` varchar(200) NOT NULL,
-  `pio` varchar(200) NOT NULL
+  `pio` varchar(200) NOT NULL,
+  `sy` varchar(20) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Dumping data for table `tb_vote`
 --
 
-INSERT INTO `tb_vote` (`voteid`, `studid`, `cm`, `vcm`, `sec`, `assec`, `tre`, `astre`, `aud`, `asaud`, `bm`, `abm`, `pio`) VALUES
-(6, 18, 'nn nn nn', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', 'sample sample sample', ' sa  sa sa', 'add  add  add', '12 12  12', 'b b b', 'aaaa   aaa  aaa', 'pio  asdasdasd  asdasdasd'),
-(7, 22, 'nn nn nn', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', ' q  a  a', ' as  as  as', 'add  add  add', 'asad   asad  asad', 'b b b', 'aaaa   aaa  aaa', 'pio  asdasdasd  asdasdasd'),
-(8, 20, 'jj jj jj', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', 'sample sample sample', ' sa  sa sa', 'add  add  add', 'asad   asad  asad', 'b b b', 'asdddd asddd  aasdddd', 'pio  asdasdasd  asdasdasd');
+INSERT INTO `tb_vote` (`voteid`, `studid`, `cm`, `vcm`, `sec`, `assec`, `tre`, `astre`, `aud`, `asaud`, `bm`, `abm`, `pio`, `sy`) VALUES
+(6, 18, 'nn nn nn', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', 'sample sample sample', ' sa  sa sa', 'add  add  add', '12 12  12', 'b b b', 'aaaa   aaa  aaa', 'pio  asdasdasd  asdasdasd', ''),
+(7, 22, 'nn nn nn', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', ' q  a  a', ' as  as  as', 'add  add  add', 'asad   asad  asad', 'b b b', 'aaaa   aaa  aaa', 'pio  asdasdasd  asdasdasd', ''),
+(8, 20, 'jj jj jj', ' hgb  hjh  hgh', ' ddd  jjj  gfg', ' Maria  Santos  Lopez', 'sample sample sample', ' sa  sa sa', 'add  add  add', 'asad   asad  asad', 'b b b', 'asdddd asddd  aasdddd', 'pio  asdasdasd  asdasdasd', '');
 
 --
 -- Indexes for dumped tables
@@ -679,7 +681,7 @@ ALTER TABLE `tb_sec`
 -- AUTO_INCREMENT for table `tb_students`
 --
 ALTER TABLE `tb_students`
-  MODIFY `studid` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `studid` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `tb_treas`
