@@ -49,11 +49,11 @@
                 $sql_bsed = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSED' OR b.course = 'BSED' OR course = 'BEED' GROUP BY b.course ");
+                                                WHERE b.course = 'BSED' OR b.course = 'BTVED' OR course = 'BEED' GROUP BY b.course ");
                 $sql_bsed->execute();
                 $bsed_count = $sql_bsed->fetchColumn(0); 
 
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BSED' OR course = 'BEED' ");
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BTVED' OR course = 'BEED' ");
                 $sql_total_students->execute();
                 $total_students = $sql_total_students->fetchColumn();
 
