@@ -49,18 +49,18 @@
                 $sql_bsed = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSED' OR b.course = 'BTVED' OR b.course = 'BEED' GROUP BY b.course ");
+                                                WHERE b.course = 'BSED' OR b.course = 'BTVTED' OR b.course = 'BEED' GROUP BY b.course ");
                 $sql_bsed->execute();
                 $bsed_count = $sql_bsed->fetchColumn(0); 
 
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BTVED' OR course = 'BEED' ");
+                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BTVTED' OR course = 'BEED' ");
                 $sql_total_students->execute();
                 $total_students = $sql_total_students->fetchColumn();
 
                 $bsed_percentage = ($total_students > 0) ? ($bsed_count / $total_students) * 100 : 0;
 
             ?>
-            <p class="program-label">BSED/BTVED/BEED</p>
+            <p class="program-label">BSED/BTVTED/BEED</p>
             <div class="progress mb-3">
                 <div class="progress-bar bg-bsed" style="width: <?php echo round($bsed_percentage, 2) . "%" ?>">
                     <?php echo round($bsed_percentage, 2) . "%" ?></div>
