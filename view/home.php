@@ -1,12 +1,14 @@
 <?php
     require_once '../conn/connection.php';
+    
+    $schoolyear = $_COOKIE['schoolyear'];
 
-    $result = $conn->prepare("SELECT * FROM tb_students");    
-    $result->execute();
+    $result = $conn->prepare("SELECT * FROM tb_students WHERE schoolyear = ? ");    
+    $result->execute([$schoolyear]);
     $count_students = $result->rowCount();
     
-    $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote");    
-    $vote->execute();
+    $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear = ?");    
+    $vote->execute([$schoolyear]);
     $count_vote = $vote->fetchColumn(0);
     
 ?>
@@ -19,7 +21,7 @@
     </div>
     <div class="col-md-6">
         <div class="stat-card p-4 bg-light-green text-center">
-            <div class="stat-title">No. of Votes</div>
+            <div class="stat-title">No. of Students Votes</div>
             <div class="stat-value"><?php echo $count_vote ?></div>
         </div>
     </div>

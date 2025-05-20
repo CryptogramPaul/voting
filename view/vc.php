@@ -211,7 +211,7 @@ h2 {
 
 <div class="row p-5">
     <div class="col">
-        <h1>You are done voting. Thank you for your participation!</h1>
+        <h1 class="text-center">You are done voting. Thank you for your participation!</h1>
     </div>
 </div>
 

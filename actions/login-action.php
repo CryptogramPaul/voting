@@ -14,6 +14,10 @@ try {
     $login->execute([$_username, $_password]);
     $fetch_login = $login->fetch();
 	
+    $sql = $conn->prepare("SELECT * FROM tb_schoolyear WHERE isActive = 1 ");    
+    $sql->execute();
+    $schoolyear = $sql->fetch();
+
     // echo $login->rowCount();
     // exit();
     if ($login->rowCount() > 0) {
@@ -21,6 +25,7 @@ try {
 	
 
         setcookie('userid', $user_id, strtotime('+30 days'), "/");
+        setcookie('schoolyear', $schoolyear['sy'], strtotime('+30 days'), "/");
         // setcookie('user_role', $user_role, strtotime('+30 days'), "/");
 
 		// $_SESSION['oid'] = rand();
