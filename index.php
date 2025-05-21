@@ -52,7 +52,7 @@
         </div>
     </nav>
 
-    <div class="container" id="LoadDetails">
+    <div class="container py-3" id="LoadDetails">
 
     </div>
 

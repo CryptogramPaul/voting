@@ -1,6 +1,7 @@
 <?php
     require_once '../conn/connection.php';
     $studid = $_COOKIE['userid'];
+    $schoolyear = $_COOKIE['schoolyear'];
 ?>
 <style>
 .vote-summary {
@@ -82,8 +83,8 @@
 }
 </style>
 <?php
-    $vote = $conn->prepare("SELECT * FROM tb_vote WHERE studid = ? ");
-    $vote->execute([$studid]);
+    $vote = $conn->prepare("SELECT * FROM tb_vote WHERE studid = ? AND schoolyear = ?");
+    $vote->execute([$studid, $schoolyear]);
     $result = $vote->fetch();
     if ($vote->rowCount() > 0) {
 ?>

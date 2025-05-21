@@ -2,9 +2,10 @@
     // session_start();
     require_once '../conn/connection.php';
     $studid = $_COOKIE['userid'];
-
-    $checkvote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE studid = ? ");
-    $checkvote->execute([$studid]);
+    $schoolyear = $_COOKIE['schoolyear'];
+    
+    $checkvote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE studid = ? AND schoolyear = ? ");
+    $checkvote->execute([$studid, $schoolyear]);
     $countvote = $checkvote->fetchColumn(0);
     
     // $disabled = "";
@@ -131,8 +132,8 @@ h2 {
     <div class="col-12 pt-3">
         <div class="tabs">
             <?php 
-                $party = $conn->prepare("SELECT party FROM `tb_candidates` group by party ");
-                $party->execute();
+                $party = $conn->prepare("SELECT party FROM `tb_candidates` WHERE sy = ? group by party ");
+                $party->execute([$schoolyear]);
                 foreach ($party->fetchAll() as $key => $value) {
                     if ($value["party"] == "Liberal") {
                         $tab = "active-liberal";
@@ -156,7 +157,7 @@ h2 {
 <form id="FormVote">
     <div class="row">
         <?php
-        $position = $conn->prepare("SELECT DISTINCT position FROM `tb_candidates` GROUP BY position ORDER BY 
+        $position = $conn->prepare("SELECT DISTINCT position FROM `tb_candidates` WHERE sy = ? GROUP BY position ORDER BY 
             CASE
                 WHEN 'CHAIRMAN' THEN 1
                 WHEN 'VICE CHAIRMAN' THEN 2
@@ -171,7 +172,7 @@ h2 {
                 ELSE 999
             END;
             ");
-        $position->execute();
+        $position->execute([$schoolyear]);
         
         foreach($position->fetchAll() as $key => $value){
             $position = $value['position'];

@@ -31,12 +31,8 @@
         <div class="card p-4">
             <h2 class="card-title mb-2">Percentage of Votes</h2>
             <?php
-                // OVERALL PERCENTAGE
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $overall = ($total_students > 0) ? ($count_vote / $total_students) * 100 : 0;
+               
+                $overall = ($count_students > 0) ? ($count_vote / $count_students) * 100 : 0;
 
             ?>
             <h4 class="mb-2 fw-semibold">Overall: <?php echo round($overall, 2) . "%" ?></h4>
@@ -46,443 +42,214 @@
             </div>
 
             <?php
-                // BSED PERCENTAGE
-
-                $sql_bsed = $conn->prepare("SELECT count(*) as vote
+                $get_course = $conn->prepare("SELECT 'Education' AS group_name, COUNT(*) AS student_count
+                    FROM tb_students
+                    WHERE (course = 'BSED' OR course = 'BTVTED' OR course = 'BEED')
+                    AND schoolyear = ?");
+                $get_course->execute([$schoolyear]);
+                
+                foreach($get_course->fetchAll() as $key => $value){
+                
+                    $education = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSED' OR b.course = 'BTVTED' OR b.course = 'BEED' ");
-                // $sql_bsed = $conn->prepare("SELECT count(*) as vote
-                //                                 FROM tb_students a 
-                //                                 JOIN tb_vote b ON a.studid = b.studid 
-                //                                 WHERE a.course = 'BSED' OR a.course = 'BTVTED' OR a.course = 'BEED' ");
-                $sql_bsed->execute();
-                $bsed_count = $sql_bsed->fetchColumn(0); 
+                                                WHERE b.course = 'BSED' OR b.course = 'BTVTED' OR b.course = 'BEED' AND a.schoolyear = ? ");
+                    $education->execute([$schoolyear]);
+                    $education_count = $education->fetchColumn(0);
+                    
+                    
+                    $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BTVTED' OR course = 'BEED' AND schoolyear = ? ");
+                    $sql_total_students->execute([$schoolyear]);
+                    $total_students = $sql_total_students->fetchColumn();
 
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSED' OR course = 'BTVTED' OR course = 'BEED' ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $bsed_percentage = ($total_students > 0) ? ($bsed_count / $total_students) * 100 : 0;
-
+                    $bsed_percentage = ($total_students > 0) ? ($education_count / $total_students) * 100 : 0;
             ?>
-            <p class="program-label">BSED/BTVTED/BEED</p>
+            <p class="program-label">EDUCATION</p>
+
             <div class="progress mb-3">
                 <div class="progress-bar bg-bsed" style="width: <?php echo round($bsed_percentage, 2) . "%" ?>">
                     <?php echo round($bsed_percentage, 2) . "%" ?></div>
             </div>
-
-            <!-- <?php
-                // BEED PERCENTAGE
-
-                $sql_beed = $conn->prepare("SELECT count(*) as vote
-                                                FROM tb_vote a 
-                                                LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BEED' GROUP BY b.course ");
-                $sql_beed->execute();
-                $beed_count = $sql_beed->fetchColumn(0); 
-
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BEED' ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $beed_percentage = ($total_students > 0) ? ($beed_count / $total_students) * 100 : 0;
-
-            ?>
-            <p class="program-label">BEED</p>
-            <div class="progress mb-3">
-                <div class="progress-bar bg-bsed" style="width: <?php echo round($beed_percentage, 2) . "%" ?>">
-                    <?php echo round($beed_percentage, 2) . "%" ?></div>
-            </div> -->
-
             <?php
-                // BSICT PERCENTAGE
+                }
+            ?>
+            <?php
+                $get_course = $conn->prepare("SELECT course
+                    FROM tb_students
+                    WHERE course = 'BSICT' || course = 'BSCJE' || course = 'BSIT' || course = 'BSHM'
+                    AND schoolyear = ?");
+                $get_course->execute([$schoolyear]);
 
-                $sql_bsict = $conn->prepare("SELECT count(*) as vote
+                foreach ($get_course->fetchAll() as $key => $value) {
+                   
+         
+                    $course = '';
+                    $progress_bar = '';
+                    switch ($value['course']) {
+                        case 'BSICT':
+                           $course = 'INFORMATION TECHNOLOGY';
+                           $progress_bar = 'bg-bsict';
+                            break;
+                        case 'BSCJE':
+                           $course = 'CRIMINOLOGY';
+                           $progress_bar = 'bg-bscje';
+                            break;
+                        case 'BSIT':
+                           $course = 'INDUSTRIAL TECHONOLOGY';
+                           $progress_bar = 'bg-bsit';
+                            break;
+                        case 'BSHM':
+                           $course = 'HOSPITALITY MANAGEMENT';
+                           $progress_bar = 'bg-bshm';
+                            break;
+                    }
+                    
+                    $othercourse = $conn->prepare("SELECT count(*) as vote
                                                 FROM tb_vote a 
                                                 LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSICT' ");
-                $sql_bsict->execute();
-                $bsict_count = $sql_bsict->fetchColumn(0); 
+                                                WHERE b.course = ? AND a.schoolyear = ? ");
+                    $othercourse->execute([$value['course'], $schoolyear]);
+                    $othercourse_count = $othercourse->fetchColumn(0);
+                    
+                    
+                    $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = ? AND schoolyear = ? ");
+                    $sql_total_students->execute([$value['course'], $schoolyear]);
+                    $total_students = $sql_total_students->fetchColumn();
 
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSICT'  ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $bsict_percentage = ($total_students > 0) ? ($bsict_count / $total_students) * 100 : 0;
-
+                    $other_course_percentage = ($total_students > 0) ? ($othercourse_count / $total_students) * 100 : 0;
             ?>
-            <p class="program-label">BSICT</p>
+            <p class="program-label"><?php echo $course ?></p>
             <div class="progress mb-3">
-                <div class="progress-bar bg-primary" style="width: <?php echo round($bsict_percentage, 2) . "%" ?>">
-                    <?php echo round($bsict_percentage, 2) . "%" ?></div>
+                <div class="progress-bar <?php echo $progress_bar ?>"
+                    style="width: <?php echo round($other_course_percentage, 2) . "%" ?>">
+                    <?php echo round($other_course_percentage, 2) . "%" ?></div>
             </div>
 
             <?php
-                // BSCJE PERCENTAGE
-
-                $sql_bscje = $conn->prepare("SELECT count(*) as vote
-                                                FROM tb_vote a 
-                                                LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSCJE' ");
-                $sql_bscje->execute();
-                $bscje_count = $sql_bscje->fetchColumn(0); 
-
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSCJE' ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $bscje_percentage = ($total_students > 0) ? ($bscje_count / $total_students) * 100 : 0;
-
+                } 
             ?>
-            <p class="program-label">BSCJE</p>
-            <div class="progress mb-3">
-                <div class="progress-bar bg-bscje" style="width: <?php echo round($bscje_percentage, 2) . "%" ?>">
-                    <?php echo round($bscje_percentage, 2) . "%" ?></div>
-            </div>
 
-            <?php
-                // BSIT PERCENTAGE
-
-                $sql_bsit = $conn->prepare("SELECT count(*) as vote
-                                                FROM tb_vote a 
-                                                LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSIT' ");
-                $sql_bsit->execute();
-                $bsit_count = $sql_bsit->fetchColumn(0); 
-
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSIT' ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $bsit_percentage = ($total_students > 0) ? ($bsit_count / $total_students) * 100 : 0;
-
-            ?>
-            <p class="program-label">BSIT</p>
-            <div class="progress mb-3">
-                <div class="progress-bar bg-bsit" style="width: <?php echo round($bsit_percentage, 2) . "%" ?>">
-                    <?php echo round($bsit_percentage, 2) . "%" ?></div>
-            </div>
-
-            <?php
-                // BSHM PERCENTAGE
-
-                $sql_bshm = $conn->prepare("SELECT count(*) as vote
-                                                FROM tb_vote a 
-                                                LEFT JOIN tb_students b ON a.studid = b.studid 
-                                                WHERE b.course = 'BSHM'  ");
-                $sql_bshm->execute();
-                $bshm_count = $sql_bshm->fetchColumn(0); 
-
-                $sql_total_students = $conn->prepare("SELECT COUNT(*) FROM tb_students WHERE course = 'BSHM' ");
-                $sql_total_students->execute();
-                $total_students = $sql_total_students->fetchColumn();
-
-                $bshm_percentage = ($total_students > 0) ? ($bshm_count / $total_students) * 100 : 0;
-
-            ?>
-            <p class="program-label">BSHM</p>
-            <div class="progress mb-3">
-                <div class="progress-bar bg-bshm" style="width: <?php echo round($bshm_percentage, 2) . "%" ?>">
-                    <?php echo round($bshm_percentage, 2) . "%" ?></div>
-            </div>
         </div>
     </div>
     <div class="col-12 col-xl-6 ">
         <div class="card p-4">
             <h2 class="card-title mb-2 text-center">Voting Result</h2>
             <div>
-                <h3 class="bg-secondary text-white p-1">CHAIRMAN</h3>
                 <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'CHAIRMAN' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE cm = ? ");    
-                            $vote->execute([$candidate]);
+                    $candidates = $conn->prepare("SELECT * FROM tb_candidates GROUP BY position ORDER BY 
+                    CASE position
+                        WHEN 'CHAIRMAN' THEN 1
+                        WHEN 'VICE CHAIRMAN' THEN 2
+                        WHEN 'SECRETARY' THEN 3
+                        WHEN 'ASSISTANT SECRETARY' THEN 4
+                        WHEN 'TREASURER' THEN 5
+                        WHEN 'ASSISTANT TREASURER' THEN 6
+                        WHEN 'AUDITOR' THEN 7
+                        WHEN 'ASSISTANT AUDITOR' THEN 8
+                        WHEN 'ASSISTANT BUSINESS MANAGER' THEN 9
+                        WHEN 'BUSINESS MANAGER' THEN 10
+                        WHEN 'PIO' THEN 11
+                        ELSE 999
+                    END; ");    
+                    $candidates->execute();
+                    
+                    foreach ($candidates->fetchAll() as $key => $value) {
+                        $position = $value['position'];
+                        
+                    ?>
+                <h3 class="bg-secondary text-white p-1"><?php echo $position ?></h3>
+                <?php
+                    $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = ? AND sy = ? ");    
+                    $candidates->execute([$position, $schoolyear]);
+
+                    foreach ($candidates->fetchAll() as $key => $value) {
+                    $fname = $value['fname'];
+                    $mname = $value['mname'];
+                    $lname = $value['lname'];
+
+                    $candidate = $fname. ' ' . $mname. ' ' . $lname; 
+                    
+                    $count_vote = 0 ;
+
+                    switch ($position) {
+                        case 'CHAIRMAN':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND cm = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
                             $count_vote = $vote->fetchColumn(0);
-                        ?>
+
+                        break;
+                        case 'VICE CHAIRMAN':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND vcm = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'SECRETARY':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND sec = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'ASSISTANT SECRETARY':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND assec = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'TREASURER':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND tre = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'ASSISTANT TREASURER':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND astre = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'AUDITOR':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND aud = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'ASSISTANT AUDITOR':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND asaud = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'BUSINESS MANAGER':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND bm = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'ASSISTANT BUSINESS MANAGER':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND abm = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        case 'PIO':
+                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE schoolyear= ? AND pio = ? ");    
+                            $vote->execute([$schoolyear, $candidate]);
+                            $count_vote = $vote->fetchColumn(0);
+
+                        break;
+                        
+                       
+                    }
+                    
+                  
+                    
+                ?>
                 <div class="px-4 d-flex justify-content-between">
                     <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
                     <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-primary" style="width: 10%">10%</div>
-                            </div> -->
                 </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> VICE CHAIRMAN</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'VICE CHAIRMAN' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE vcm = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-info" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> SECRETARY</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'SECRETARY' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE sec = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-success" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> ASSISTANT SECRETARY</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'ASSISTANT SECRETARY' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE assec = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-success" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> TREASURER</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'TREASURER' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE tre = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                               
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-secondary" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> ASSISTANT TREASURER</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'ASSISTANT TREASURER' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE astre = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-secondary" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> AUDITOR</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'AUDITOR' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE aud = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> ASSISTANT AUDITOR</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'ASSISTANT AUDITOR' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE asaud = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> BUSINESS MANAGER</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'BUSINESS MANAGER' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE bm = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-info" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> ASSISTANT BUSINESS MANAGER</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'ASSISTANT BUSINESS MANAGER' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE abm = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-info" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
-            </div>
-            <div>
-                <h3 class="bg-secondary text-white p-1"> PIO</h3>
-                <?php
-                            $candidates = $conn->prepare("SELECT * FROM tb_candidates WHERE position = 'PIO' ");    
-                            $candidates->execute();
-    
-                            foreach ($candidates->fetchAll() as $key => $value) {
-                            $fname = $value['fname'];
-                            $mname = $value['mname'];
-                            $lname = $value['lname'];
-    
-                            $candidate = $fname. ' ' . $mname. ' ' . $lname; 
-    
-                            $vote = $conn->prepare("SELECT count(voteid) FROM tb_vote WHERE pio = ? ");    
-                            $vote->execute([$candidate]);
-                            $count_vote = $vote->fetchColumn(0);
-                                // echo $count_vote;
-                        ?>
-                <div class="px-4 d-flex justify-content-between">
-                    <h5 class="fw-bold text-capitalize"><?php echo $candidate?></h5>
-                    <p class="fw-bold text-capitalize"><?php echo $count_vote?></p>
-                    <!-- <div class="progress mb-3">
-                                <div class="progress-bar bg-info" style="width: 10%">10%</div>
-                            </div> -->
-                </div>
-                <?php } ?>
+                <?php }} ?>
             </div>
         </div>
     </div>
